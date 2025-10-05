@@ -1,16 +1,18 @@
 import { useEffect, useState } from "react";
 import { db } from "./firebaseConfig.jsx";
 import { doc, getDoc, updateDoc, setDoc, onSnapshot } from "firebase/firestore";
+import kumar2 from './assets/kumar2.png';
+import kumar from './assets/kumar.webp';
 
 function ImageBattle() {
   const [likes, setLikes] = useState({ img1: 0, img2: 0 });
   const [selected, setSelected] = useState(null);
   const [winner, setWinner] = useState(null);
-  const [timeLeft, setTimeLeft] = useState(10);
+  const [timeLeft, setTimeLeft] = useState(1000);
 
   const images = [
-    { id: "img1", url: "https://placekitten.com/300/300",name:"vishal" },
-    { id: "img2", url: "https://placebear.com/300/300",name:"devil" },
+    { id: "img1", url:kumar,name:"chimpu" },
+    { id: "img2", url:kumar2,name:"simpu" },
   ];
 
   const getImageName = (id) => {
@@ -70,7 +72,7 @@ function ImageBattle() {
 
   return (
     <div style={styles.container}>
-      <h1>Who is Sexy</h1>
+      <h1>Who is more Lusty 🤤</h1>
       <h2>Time Left: {timeLeft}s</h2>
 
       <div style={styles.imageContainer}>
