@@ -8,11 +8,11 @@ function ImageBattle() {
   const [likes, setLikes] = useState({ img1: 0, img2: 0 });
   const [selected, setSelected] = useState(null);
   const [winner, setWinner] = useState(null);
-  const [timeLeft, setTimeLeft] = useState(1000);
+  const [timeLeft, setTimeLeft] = useState(0);
 
   const images = [
-    { id: "img1", url:kumar,name:"chimpu" },
-    { id: "img2", url:kumar2,name:"simpu" },
+    { id: "img1", url: kumar, name: "chimpu" },
+    { id: "img2", url: kumar2, name: "simpu" },
   ];
 
   const getImageName = (id) => {
@@ -25,7 +25,12 @@ function ImageBattle() {
       const ref = doc(db, "battles", "round1");
       const snap = await getDoc(ref);
       if (!snap.exists()) {
-        await setDoc(ref, { img1: 0, img2: 0 });
+        await setDoc(ref, {
+          img1: 0,
+          img2: 0,
+          startTime: Date.now(),
+          duration: 1000
+        });
       }
     };
     initDoc();
@@ -34,28 +39,35 @@ function ImageBattle() {
   useEffect(() => {
     const unsub = onSnapshot(doc(db, "battles", "round1"), (snapshot) => {
       if (snapshot.exists()) {
+        const data = snapshot.data();
         setLikes({
-          img1: snapshot.data().img1 || 0,
-          img2: snapshot.data().img2 || 0,
+          img1: data.img1 || 0,
+          img2: data.img2 || 0,
         });
+
+        const now = Date.now();
+        const endTime = (data.startTime || now) + ((data.duration || 1000) * 1000);
+        const remaining = Math.max(Math.floor((endTime - now) / 1000), 0);
+        setTimeLeft(remaining);
+
+        if (remaining === 0 && !winner) {
+          const img1Likes = data.img1 || 0;
+          const img2Likes = data.img2 || 0;
+          if (img1Likes > img2Likes) setWinner(`${getImageName("img1")} Wins!`);
+          else if (img2Likes > img1Likes) setWinner(`${getImageName("img2")} Wins!`);
+          else setWinner("🤝 It's a Tie!");
+        }
       }
     });
     return () => unsub();
-  }, []);
+  }, [winner]);
 
   useEffect(() => {
     if (timeLeft > 0) {
       const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
       return () => clearTimeout(timer);
-    } else {
-      const img1Likes = likes.img1 || 0;
-      const img2Likes = likes.img2 || 0;
-
-      if (img1Likes > img2Likes) setWinner(`${getImageName("img1")} Wins!`);
-      else if (img2Likes > img1Likes) setWinner(`${getImageName("img2")} Wins!`);
-      else setWinner("🤝 It's a Tie!");
     }
-  }, [timeLeft, likes]);
+  }, [timeLeft]);
 
   const handleVote = async (id) => {
     if (selected || winner) return;
