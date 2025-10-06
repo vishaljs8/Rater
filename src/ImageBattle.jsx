@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { db } from "./firebaseConfig.jsx";
 import { doc, getDoc, updateDoc, setDoc, onSnapshot } from "firebase/firestore";
-import kumar2 from './assets/kumar2.png';
-import kumar from './assets/kumar.webp';
+import bhardwaj from './assets/bhardwaj.png';
+import narottam from './assets/narottam.png';
 
 function ImageBattle() {
   const [likes, setLikes] = useState({ img1: 0, img2: 0 });
@@ -11,8 +11,8 @@ function ImageBattle() {
   const [timeLeft, setTimeLeft] = useState(0);
 
   const images = [
-    { id: "img1", url: kumar, name: "chimpu" },
-    { id: "img2", url: kumar2, name: "simpu" },
+    { id: "img1", url: bhardwaj, name: "bhardwaj" },
+    { id: "img2", url: narottam, name: "narottam" },
   ];
 
   const getImageName = (id) => {
@@ -100,7 +100,7 @@ function ImageBattle() {
 
   return (
     <div style={styles.container}>
-      <h1>Who is more Lusty 🤤</h1>
+      <h1>Best choice for ....👸</h1>
       <h2>Time Left: {timeLeft}s</h2>
 
       <div style={styles.imageContainer}>
